@@ -84,7 +84,7 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
             <h1><?php echo __('Klaviyo Subscription Forms | Settings', 'smarty-klaviyo-subscription-forms'); ?></h1>
             
             <h2><?php echo __('Products', 'smarty-klaviyo-subscription-forms'); ?></h2>
-            <p><?php echo __('This plugin allows you to manage Klaviyo subscription forms for specific WooCommerce products.', 'smarty-klaviyo-subscription-forms'); ?></p>
+            <p><?php echo __('Manage Klaviyo subscription forms for specific WooCommerce products.', 'smarty-klaviyo-subscription-forms'); ?></p>
 
             <form method="POST" id="smarty-klaviyo-form">
                 <?php wp_nonce_field('smarty_save_klaviyo_forms', 'smarty_klaviyo_nonce'); ?>
@@ -105,7 +105,9 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                                 <tr>
                                     <td style="position: relative; width:35%">
                                         <?php if ($index === array_key_last($smarty_klaviyo_forms)): ?>
-                                            <button type="button" id="smarty-add-form-row" class="add-form-row">+</button>
+                                            <button type="button" id="smarty-add-form-row" class="add-form-row">
+												<span class="dashicons dashicons-plus"></span>
+											</button>
                                         <?php endif; ?>
                                         <select name="smarty_klaviyo_forms[<?php echo $index; ?>][product_ids][]" multiple="multiple" class="smarty-ksf-product-search" style="width: 100%;">
                                             <?php
@@ -146,7 +148,9 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                                     </td>
                                     <td style="position: relative;">
                                         <?php echo !empty($form_data['created']) ? esc_html($form_data['created']) : 'N/A'; ?>
-                                        <button type="button" class="remove-form-row">X</button>
+                                        <button type="button" class="remove-form-row">
+											<span class="dashicons dashicons-no"></span>
+										</button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

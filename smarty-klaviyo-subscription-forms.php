@@ -86,7 +86,7 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
             <h2><?php echo __('Products', 'smarty-klaviyo-subscription-forms'); ?></h2>
             <p><?php echo __('This plugin allows you to manage Klaviyo subscription forms for specific WooCommerce products.', 'smarty-klaviyo-subscription-forms'); ?></p>
 
-            <form method="POST">
+            <form method="POST" id="smarty-klaviyo-form">
                 <?php wp_nonce_field('smarty_save_klaviyo_forms', 'smarty_klaviyo_nonce'); ?>
 
                 <table id="smarty-klaviyo-forms-table" class="wp-list-table widefat striped">

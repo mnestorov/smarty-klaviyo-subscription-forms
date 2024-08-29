@@ -48,10 +48,10 @@ if (!function_exists('smarty_ksf_enqueue_admin_scripts')) {
         wp_enqueue_style('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css');
         
         // Enqueue your custom script
-        wp_enqueue_script('smarty-ksf-admin-js', plugin_dir_url(__FILE__) . 'smarty-ksf-admin.js', array('jquery', 'select2'), null, true);
+        wp_enqueue_script('smarty-ksf-admin-js', plugin_dir_url(__FILE__) . 'js/smarty-ksf-admin.js', array('jquery', 'select2'), null, true);
         
         // Enqueue your custom CSS
-        wp_enqueue_style('smarty-ksf-admin-css', plugin_dir_url(__FILE__) . 'smarty-ksf-admin.css', array(), null);
+        wp_enqueue_style('smarty-ksf-admin-css', plugin_dir_url(__FILE__) . 'css/smarty-ksf-admin.css', array(), null);
     }
     add_action('admin_enqueue_scripts', 'smarty_ksf_enqueue_admin_scripts');
 }

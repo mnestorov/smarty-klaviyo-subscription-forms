@@ -105,4 +105,15 @@ jQuery(document).ready(function($) {
     $(document).on('click', '.remove-form-row', function() {
         $(this).closest('tr').remove();
     });
+
+    setTimeout(function() {
+        var message = document.getElementById("smarty-updated");
+        if (message) {
+            message.style.transition = "opacity 1s ease";
+            message.style.opacity = "0";
+            setTimeout(function() {
+                message.style.display = "none";
+            }, 1000); // 1 seconds
+        }
+    }, 5000); // 5 seconds
 });

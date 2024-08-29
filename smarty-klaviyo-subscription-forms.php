@@ -73,7 +73,7 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
 
             // Save product and form data
             update_option('smarty_klaviyo_forms', $_POST['smarty_klaviyo_forms']);
-            echo '<div class="updated"><p>Settings saved.</p></div>';
+            echo '<div id="smarty-updated" class="updated"><p>' . __('Settings saved.', 'smarty-klaviyo-subscription-forms') . '</p></div>';
         }
 
         // Get the saved settings

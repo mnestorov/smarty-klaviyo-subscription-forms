@@ -44,11 +44,14 @@ if (!function_exists('smarty_ksf_enqueue_admin_scripts')) {
         }
 
         // Enqueue Select2
-        wp_enqueue_script('select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), null, true);
-        wp_enqueue_style('select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
-
+        wp_enqueue_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '4.0.13', true);
+        wp_enqueue_style('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css');
+        
         // Enqueue your custom script
-        wp_enqueue_script('smarty-ksf-admin-js', plugin_dir_url(__FILE__) . 'smarty-ksf-admin.js', array('jquery', 'select2-js'), null, true);
+        wp_enqueue_script('smarty-ksf-admin-js', plugin_dir_url(__FILE__) . 'smarty-ksf-admin.js', array('jquery', 'select2'), null, true);
+        
+        // Enqueue your custom CSS
+        wp_enqueue_style('smarty-ksf-admin-css', plugin_dir_url(__FILE__) . 'smarty-ksf-admin.css', array(), null);
     }
     add_action('admin_enqueue_scripts', 'smarty_ksf_enqueue_admin_scripts');
 }
@@ -60,6 +63,13 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
     function smarty_ksf_settings_page_content() {
         if (isset($_POST['smarty_save_klaviyo_forms'])) {
             check_admin_referer('smarty_save_klaviyo_forms', 'smarty_klaviyo_nonce');
+
+            // Iterate through the forms and add the current date and time if it's missing
+            foreach ($_POST['smarty_klaviyo_forms'] as $index => $form_data) {
+                if (empty($form_data['created'])) {
+                    $_POST['smarty_klaviyo_forms'][$index]['created'] = current_time('mysql');
+                }
+            }
 
             // Save product and form data
             update_option('smarty_klaviyo_forms', $_POST['smarty_klaviyo_forms']);
@@ -77,22 +87,21 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
 
                 <p><button type="button" class="button button-secondary" id="smarty-add-form-row"><?php echo __('Add New Form', 'smarty-klaviyo-subscription-forms'); ?></button></p>
 
-                <table class="wp-list-table widefat fixed striped" id="klaviyo-forms-table">
+                <table class="wp-list-table widefat striped" id="smarty-klaviyo-forms-table">
                     <thead>
                         <tr>
                             <th><?php echo __('Products', 'smarty-klaviyo-subscription-forms'); ?></th>
                             <th><?php echo __('Klaviyo Form ID', 'smarty-klaviyo-subscription-forms'); ?></th>
                             <th><?php echo __('Enable Form', 'smarty-klaviyo-subscription-forms'); ?></th>
-                            <th><?php echo __('Preview', 'smarty-klaviyo-subscription-forms'); ?></th>
-                            <th><?php echo __('Action', 'smarty-klaviyo-subscription-forms'); ?></th>
+                            <th><?php echo __('Created', 'smarty-klaviyo-subscription-forms'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($smarty_klaviyo_forms)): ?>
                             <?php foreach ($smarty_klaviyo_forms as $index => $form_data): ?>
                                 <tr>
-                                    <td>
-                                        <select name="smarty_klaviyo_forms[<?php echo $index; ?>][product_ids][]" multiple="multiple" class="smarty-ksf-product-select2" style="width: 100%;">
+                                    <td style="width:60%">
+                                        <select name="smarty_klaviyo_forms[<?php echo $index; ?>][product_ids][]" multiple="multiple" class="smarty-ksf-product-search" style="width: 100%;">
                                             <?php
                                             foreach ($form_data['product_ids'] as $product_id) {
                                                 $product = wc_get_product($product_id);
@@ -110,8 +119,10 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                                             <span class="slider round"></span>
                                         </label>
                                     </td>
-                                    <td><a href="https://www.klaviyo.com/forms/<?php echo esc_attr($form_data['form_id']); ?>" target="_blank"><?php echo __('Preview Form', 'smarty-klaviyo-subscription-forms'); ?></a></td>
-                                    <td><button type="button" class="button button-secondary remove-form-row">Remove</button></td>
+                                    <td style="position: relative;">
+                                        <?php echo !empty($form_data['created']) ? esc_html($form_data['created']) : 'N/A'; ?>
+                                        <button type="button" class="remove-form-row">X</button>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -122,85 +133,7 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                     <input type="submit" name="smarty_save_klaviyo_forms" class="button-primary" value="Save Changes">
                 </p>
             </form>
-        </div>
-
-        <style>
-            /* Table styling */
-            .wp-list-table.widefat.fixed.striped {
-                width: 100%;
-                margin-top: 20px;
-                border-collapse: collapse;
-            }
-
-            .wp-list-table.widefat.fixed.striped th,
-            .wp-list-table.widefat.fixed.striped td {
-                padding: 10px;
-                border-bottom: 1px solid #e1e1e1;
-                border-right: 1px solid #e1e1e1;
-            }
-
-            .wp-list-table.widefat.fixed.striped th:last-child,
-            .wp-list-table.widefat.fixed.striped td:last-child {
-                border-right: none;
-            }
-
-            .wp-list-table.widefat.fixed.striped th {
-                background-color: #f7f7f7;
-                font-weight: bold;
-                border-top: 1px solid #e1e1e1;
-            }
-
-            .wp-list-table.widefat.fixed.striped tbody tr:nth-child(even) {
-                background-color: #f9f9f9;
-            }
-
-            /* Toggle switch styling */
-            .smarty-toggle-switch {
-                position: relative;
-                display: inline-block;
-                width: 60px;
-                height: 34px;
-            }
-
-            .smarty-toggle-switch input {
-                opacity: 0;
-                width: 0;
-                height: 0;
-            }
-
-            .smarty-toggle-switch .slider {
-                position: absolute;
-                cursor: pointer;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: #ccc;
-                transition: .4s;
-                border-radius: 34px;
-            }
-
-            .smarty-toggle-switch .slider:before {
-                position: absolute;
-                content: "";
-                height: 26px;
-                width: 26px;
-                left: 4px;
-                bottom: 4px;
-                background-color: white;
-                transition: .4s;
-                border-radius: 50%;
-            }
-
-            input:checked + .slider {
-                background-color: #2196F3;
-            }
-
-            input:checked + .slider:before {
-                transform: translateX(26px);
-            }
-        </style>
-        <?php
+        </div><?php
     }
 }
 
@@ -237,27 +170,26 @@ if (!function_exists('smarty_ksf_search_products')) {
      * Ajax handler for Select2 product search.
      */
     function smarty_ksf_search_products() {
-        $term = wc_clean($_GET['q']);
+        if (!current_user_can('manage_options')) wp_die('Unauthorized');
 
-        $args = array(
-            'post_type' => 'product',
-            'posts_per_page' => 10, // Limit to 10 products for now
-            's' => $term, // Search term
-            'post_status' => 'publish',
-            'meta_query' => array(), // Get all products regardless of stock status
+        $term = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : '';
+
+        $query_args = array(
+            'post_type'      => 'product',
+            'post_status'    => 'publish',
+            's'              => $term,
+            'posts_per_page' => -1,
         );
 
-        $query = new WP_Query($args);
-
+        $query = new WP_Query($query_args);
         $results = array();
 
         if ($query->have_posts()) {
             while ($query->have_posts()) {
                 $query->the_post();
-                $product = wc_get_product(get_the_ID());
                 $results[] = array(
-                    'id' => $product->get_id(),
-                    'text' => $product->get_name() . ( ! $product->is_in_stock() ? ' (Out of Stock)' : '' ),
+                    'id'    => get_the_ID(),
+                    'text'  => get_the_title() . ' (ID: ' . get_the_ID() . ')',
                 );
             }
         } else {

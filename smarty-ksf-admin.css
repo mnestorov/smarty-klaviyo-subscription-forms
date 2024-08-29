@@ -1,0 +1,164 @@
+/* Table styling */
+.wp-list-table.widefat.striped {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+    position: relative;
+}
+
+.wp-list-table.widefat.striped th,
+.wp-list-table.widefat.striped td {
+    padding: 10px;
+    border-bottom: 1px solid #e1e1e1;
+    border-right: 1px solid #e1e1e1;
+    vertical-align: middle; /* Vertically align content in the middle */
+    text-align: center; /* Horizontally align content in the center */
+}
+
+.wp-list-table.widefat.striped th:last-child,
+.wp-list-table.widefat.striped td:last-child {
+    border-right: none;
+}
+
+.wp-list-table.widefat.striped th {
+    background-color: #f7f7f7;
+    font-weight: bold;
+    border-top: 1px solid #e1e1e1;
+    text-align: center; /* Horizontally align header content in the center */
+}
+
+.wp-list-table.widefat.striped tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Remove button styling */
+.remove-form-row {
+    position: absolute;
+    right: -15px; /* Move the button outside the cell to overlap the right border */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0;
+    border-radius: 50%;
+    text-align: center;
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.remove-form-row:hover {
+    background-color: #d94444;
+}
+
+/* Toggle switch styling */
+.smarty-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.smarty-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.smarty-toggle-switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.smarty-toggle-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Responsive table */
+@media screen and (max-width: 768px) {
+    .wp-list-table.widefat.striped,
+    .wp-list-table.widefat.striped thead,
+    .wp-list-table.widefat.striped tbody,
+    .wp-list-table.widefat.striped th,
+    .wp-list-table.widefat.striped td,
+    .wp-list-table.widefat.striped tr {
+        display: block;
+    }
+
+    .wp-list-table.widefat.striped thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .wp-list-table.widefat.striped tr {
+        margin: 0;
+        position: relative; /* Make the row relative to position the remove button */
+        padding-top: 30px; /* Add space at the top for the remove button */
+    }
+
+    .wp-list-table.widefat.striped td {
+        border: none;
+        border-bottom: 1px solid #e1e1e1;
+        position: relative;
+        text-align: left;
+    }
+
+    .wp-list-table.widefat.striped td:before {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        transform: translateY(-50%);
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .wp-list-table.widefat.striped td:before {
+        content: attr(data-label);
+    }
+
+    .remove-form-row {
+        position: absolute;
+        right: -13px;
+        top: 40px;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        text-align: center;
+        background-color: #ff4d4d;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        margin: 0;
+        z-index: 999;
+    }
+}

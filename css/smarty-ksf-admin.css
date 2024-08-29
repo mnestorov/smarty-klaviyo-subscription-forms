@@ -8,27 +8,43 @@
 
 .wp-list-table.widefat.striped th,
 .wp-list-table.widefat.striped td {
-    padding: 10px;
-    border-bottom: 1px solid #e1e1e1;
-    border-right: 1px solid #e1e1e1;
+    padding: 10px 10px 10px 20px;
+    border: 1px solid #e1e1e1;
     vertical-align: middle; /* Vertically align content in the middle */
     text-align: center; /* Horizontally align content in the center */
-}
-
-.wp-list-table.widefat.striped th:last-child,
-.wp-list-table.widefat.striped td:last-child {
-    border-right: none;
 }
 
 .wp-list-table.widefat.striped th {
     background-color: #f7f7f7;
     font-weight: bold;
-    border-top: 1px solid #e1e1e1;
+    border: 1px solid #e1e1e1;
     text-align: center; /* Horizontally align header content in the center */
 }
 
 .wp-list-table.widefat.striped tbody tr:nth-child(even) {
     background-color: #f9f9f9;
+}
+
+/* Add button styling */
+.add-form-row {
+    position: absolute;
+    left: -15px; /* Move the button outside the cell to overlap the left border */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0;
+    border-radius: 50%;
+    text-align: center;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.add-form-row:hover {
+    background-color: #218838;
 }
 
 /* Remove button styling */
@@ -148,6 +164,23 @@ input:checked + .slider:before {
 
     .wp-list-table.widefat.striped td:before {
         content: attr(data-label);
+    }
+
+    .add-form-row {
+        position: absolute;
+        left: -13px;
+        top: -30px;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        text-align: center;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        margin: 0;
+        z-index: 999;
     }
 
     .remove-form-row {

@@ -82,12 +82,14 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
         ?>
         <div class="wrap">
             <h1><?php echo __('Klaviyo Subscription Forms | Settings', 'smarty-klaviyo-subscription-forms'); ?></h1>
+            
+            <h2><?php echo __('Products', 'smarty-klaviyo-subscription-forms'); ?></h2>
+            <p><?php echo __('This plugin allows you to manage Klaviyo subscription forms for specific WooCommerce products.', 'smarty-klaviyo-subscription-forms'); ?></p>
+
             <form method="POST">
                 <?php wp_nonce_field('smarty_save_klaviyo_forms', 'smarty_klaviyo_nonce'); ?>
 
-                <p><button type="button" class="button button-secondary" id="smarty-add-form-row"><?php echo __('Add New Form', 'smarty-klaviyo-subscription-forms'); ?></button></p>
-
-                <table class="wp-list-table widefat striped" id="smarty-klaviyo-forms-table">
+                <table id="smarty-klaviyo-forms-table" class="wp-list-table widefat striped">
                     <thead>
                         <tr>
                             <th><?php echo __('Products', 'smarty-klaviyo-subscription-forms'); ?></th>
@@ -101,7 +103,10 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                         <?php if (!empty($smarty_klaviyo_forms)): ?>
                             <?php foreach ($smarty_klaviyo_forms as $index => $form_data): ?>
                                 <tr>
-                                    <td style="width:35%">
+                                    <td style="position: relative; width:35%">
+                                        <?php if ($index === array_key_last($smarty_klaviyo_forms)): ?>
+                                            <button type="button" id="smarty-add-form-row" class="add-form-row">+</button>
+                                        <?php endif; ?>
                                         <select name="smarty_klaviyo_forms[<?php echo $index; ?>][product_ids][]" multiple="multiple" class="smarty-ksf-product-search" style="width: 100%;">
                                             <?php
                                             foreach ($form_data['product_ids'] as $product_id) {

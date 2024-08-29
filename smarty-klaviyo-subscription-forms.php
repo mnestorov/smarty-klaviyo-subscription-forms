@@ -92,6 +92,7 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                         <tr>
                             <th><?php echo __('Products', 'smarty-klaviyo-subscription-forms'); ?></th>
                             <th><?php echo __('Klaviyo Form ID', 'smarty-klaviyo-subscription-forms'); ?></th>
+                            <th><?php echo __('Display Hook', 'smarty-klaviyo-subscription-forms'); ?></th>
                             <th><?php echo __('Enable Form', 'smarty-klaviyo-subscription-forms'); ?></th>
                             <th><?php echo __('Created', 'smarty-klaviyo-subscription-forms'); ?></th>
                         </tr>
@@ -100,7 +101,7 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                         <?php if (!empty($smarty_klaviyo_forms)): ?>
                             <?php foreach ($smarty_klaviyo_forms as $index => $form_data): ?>
                                 <tr>
-                                    <td style="width:60%">
+                                    <td style="width:35%">
                                         <select name="smarty_klaviyo_forms[<?php echo $index; ?>][product_ids][]" multiple="multiple" class="smarty-ksf-product-search" style="width: 100%;">
                                             <?php
                                             foreach ($form_data['product_ids'] as $product_id) {
@@ -113,6 +114,25 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                                         </select>
                                     </td>
                                     <td><input type="text" name="smarty_klaviyo_forms[<?php echo $index; ?>][form_id]" value="<?php echo esc_attr($form_data['form_id']); ?>" /></td>
+                                    <td>
+                                        <select name="smarty_klaviyo_forms[<?php echo $index; ?>][hook]">
+                                            <?php
+                                            $hooks = array(
+                                                'woocommerce_before_main_content' => 'Before Main Content',
+                                                'woocommerce_before_single_product' => 'Before Single Product',
+                                                'woocommerce_single_product_summary' => 'Before Single Product Summary',
+                                                'woocommerce_after_single_product_summary' => 'After Single Product Summary',
+                                                'woocommerce_after_single_product' => 'After Single Product',
+                                                // Add other WooCommerce hooks here
+                                            );
+
+                                            foreach ($hooks as $hook => $label) {
+                                                $selected = selected($form_data['hook'], $hook, false);
+                                                echo "<option value='{$hook}' {$selected}>{$label}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>
                                     <td>
                                         <label class="smarty-toggle-switch">
                                             <input type="checkbox" name="smarty_klaviyo_forms[<?php echo $index; ?>][enabled]" value="yes" <?php checked(isset($form_data['enabled']) ? $form_data['enabled'] : '', 'yes'); ?>>
@@ -139,30 +159,41 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
 
 if (!function_exists('smarty_add_klaviyo_form_for_out_of_stock_products')) {
     /**
-     * Display the Klaviyo form for out of stock products.
+     * Display the Klaviyo form for out of stock products based on the selected hook.
      */
     function smarty_add_klaviyo_form_for_out_of_stock_products() {
-        global $product;
+        // Get the Klaviyo forms configuration
+        $smarty_klaviyo_forms = get_option('smarty_klaviyo_forms', []);
 
-        // Check if the product is out of stock
-        if (!$product->is_in_stock()) {
-            // Get the product ID
-            $product_id = $product->get_id();
+        if (!$smarty_klaviyo_forms) {
+            return;
+        }
 
-            // Get the Klaviyo forms configuration
-            $smarty_klaviyo_forms = get_option('smarty_klaviyo_forms', []);
+        foreach ($smarty_klaviyo_forms as $form_data) {
+            if (isset($form_data['enabled']) && $form_data['enabled'] === 'yes') {
+                add_action($form_data['hook'], function() use ($form_data) {
+                    global $product;
 
-            // Determine which Klaviyo form to display based on the product ID
-            foreach ($smarty_klaviyo_forms as $form_data) {
-                if (isset($form_data['product_ids']) && in_array($product_id, $form_data['product_ids']) && isset($form_data['enabled']) && $form_data['enabled'] === 'yes') {
-                    // Display the form for the configured product
-                    echo '<div class="klaviyo-form-' . esc_attr($form_data['form_id']) . '"></div>';
-                    break; // Stop after the first matching product ID
-                }
+                    // Ensure we have a valid product object
+                    if (!$product || !is_a($product, 'WC_Product')) {
+                        return;
+                    }
+
+                    $product_id = $product->get_id();
+
+                    // Check if the current product ID matches any in the form data
+                    if (in_array($product_id, $form_data['product_ids'])) {
+                        // Check if the product is out of stock
+                        if (!$product->is_in_stock()) {
+                            // Display the form for the configured product
+                            echo '<div class="klaviyo-form-' . esc_attr($form_data['form_id']) . '"></div>';
+                        }
+                    }
+                });
             }
         }
     }
-    add_action('woocommerce_single_product_summary', 'smarty_add_klaviyo_form_for_out_of_stock_products', 6);
+    add_action('wp', 'smarty_add_klaviyo_form_for_out_of_stock_products');
 }
 
 if (!function_exists('smarty_ksf_search_products')) {

@@ -99,6 +99,11 @@ input:checked + .slider:before {
     transform: translateX(26px);
 }
 
+/* Select2  */
+.select2.select2-container.select2-container--default {
+    width: 100% !important;
+}
+
 /* Responsive table */
 @media screen and (max-width: 768px) {
     .wp-list-table.widefat.striped,

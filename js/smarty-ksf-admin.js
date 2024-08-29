@@ -48,6 +48,16 @@ jQuery(document).ready(function($) {
                     <input type="text" name="smarty_klaviyo_forms[` + index + `][form_id]" />
                 </td>
                 <td>
+                    <select name="smarty_klaviyo_forms[` + index + `][hook]" class="form-hook-select">
+                        <option value="woocommerce_before_main_content">Before Main Content</option>
+                        <option value="woocommerce_before_single_product">Before Single Product</option>
+                        <option value="woocommerce_single_product_summary">Single Product Summary</option>
+                        <option value="woocommerce_after_single_product_summary">After Single Product Summary</option>
+                        <option value="woocommerce_after_single_product">After Single Product</option>
+                        <!-- Add more hooks here if needed -->
+                    </select>
+                </td>
+                <td>
                     <label class="smarty-toggle-switch">
                         <input type="checkbox" name="smarty_klaviyo_forms[` + index + `][enabled]" value="yes">
                         <span class="slider round"></span>

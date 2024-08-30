@@ -63,6 +63,10 @@ The plugin is particularly useful for eCommerce stores that want to engage custo
 
 For a detailed list of changes and updates made to this project, please refer to our [Changelog](./CHANGELOG.md).
 
+## Screenshots
+
+![Screenshot](screenshots/screenshot.png)
+
 ## Contributing
 
 Contributions are welcome. Please follow the WordPress coding standards and submit pull requests for any enhancements.

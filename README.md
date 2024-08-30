@@ -65,7 +65,7 @@ For a detailed list of changes and updates made to this project, please refer to
 
 ## Screenshots
 
-![Screenshot](screenshots/screenshot.png)
+![Screenshot](screenshots/screenshot-01.png)
 
 ## Contributing
 

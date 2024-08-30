@@ -9,7 +9,11 @@
 
 ## Overview
 
-**Smarty Studio - Klaviyo Subscription Forms for WooCommerce** is a powerful plugin designed to manage and display Klaviyo subscription forms for out-of-stock products in WooCommerce. This plugin is fully compatible with WordPress multisite environments, allowing each site to manage its own product/form pairs independently. The plugin is particularly useful for eCommerce stores that want to engage customers by offering subscription options when products are out of stock.
+**Smarty Studio - Klaviyo Subscription Forms for WooCommerce** is a powerful plugin designed to manage and display Klaviyo subscription forms for out-of-stock products in WooCommerce. 
+
+This plugin is fully compatible with WordPress multisite environments, allowing each site to manage its own product/form pairs independently. 
+
+The plugin is particularly useful for eCommerce stores that want to engage customers by offering subscription options when products are out of stock.
 
 ## Features
 

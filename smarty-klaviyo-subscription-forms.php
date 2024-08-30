@@ -72,7 +72,7 @@ if (!function_exists('smarty_ksf_register_settings')) {
 
         add_settings_field(
             'smarty_ksf_form_display_condition',
-            __('Global Display Condition', 'smarty-klaviyo-subscription-forms'),
+            __('Global Display Conditions', 'smarty-klaviyo-subscription-forms'),
             'smarty_ksf_form_display_condition_callback',
             'smarty_ksf_settings',
             'smarty_ksf_general_section'
@@ -110,10 +110,16 @@ function smarty_ksf_form_display_condition_callback() {
 
 function smarty_ksf_form_display_categories_callback() {
     $options = get_option('smarty_ksf_general_settings');
-    $selected_categories = isset($options['categories']) ? $options['categories'] : array();
+
+    // Ensure that 'display_condition' is treated as an array
+    $display_condition = isset($options['display_condition']) ? (array) $options['display_condition'] : [];
+    $selected_categories = isset($options['categories']) ? (array) $options['categories'] : [];
+    
+    // Get the categories
     $categories = get_terms(array('taxonomy' => 'product_cat', 'hide_empty' => false));
+
     ?>
-    <select id="smarty_ksf_select_categories" name="smarty_ksf_general_settings[categories][]" multiple="multiple" class="form-category-select select2" style="width: 100%; display: <?php echo in_array('categories', (array)$options['display_condition']) ? 'block' : 'none'; ?>;">
+    <select id="smarty_ksf_select_categories" name="smarty_ksf_general_settings[categories][]" multiple="multiple" class="form-category-select select2" style="width: 100%; display: <?php echo in_array('categories', $display_condition) ? 'block' : 'none'; ?>;">
         <?php foreach ($categories as $category): ?>
             <option value="<?php echo esc_attr($category->term_id); ?>" <?php echo in_array($category->term_id, $selected_categories) ? 'selected="selected"' : ''; ?>>
                 <?php echo esc_html($category->name); ?>
@@ -141,6 +147,7 @@ function smarty_ksf_form_display_categories_callback() {
     </script>
     <?php
 }
+
 
 if (!function_exists('smarty_ksf_settings_page_content')) {
     /**
@@ -204,7 +211,7 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                         <?php if (!empty($smarty_klaviyo_forms)): ?>
                             <?php foreach ($smarty_klaviyo_forms as $index => $form_data): ?>
                                 <tr>
-                                    <td style="position:relative; width:20%">
+                                    <td style="position:relative;">
                                         <?php if ($index === array_key_last($smarty_klaviyo_forms)): ?>
                                             <button type="button" id="smarty-add-form-row" class="add-form-row">
                                                 <span class="dashicons dashicons-plus"></span>
@@ -221,7 +228,7 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                                             ?>
                                         </select>
                                     </td>
-                                    <td style="width:15%">
+                                    <td>
                                         <select name="smarty_klaviyo_forms[<?php echo $index; ?>][display_condition][]" multiple="multiple" class="form-display-condition-select select2" style="width: 100%;">
                                             <option value="default"><?php _e('Use Global Setting', 'smarty-klaviyo-subscription-forms'); ?></option>
                                             <option value="out_of_stock" <?php selected(in_array('out_of_stock', (array)$form_data['display_condition']), true); ?>><?php _e('Out of Stock', 'smarty-klaviyo-subscription-forms'); ?></option>
@@ -241,7 +248,7 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                                     <td style="width:5%">
 										<input type="text" name="smarty_klaviyo_forms[<?php echo $index; ?>][form_id]" value="<?php echo esc_attr($form_data['form_id']); ?>" />
 									</td>
-                                    <td>
+                                    <td style="width:5%">
                                         <select name="smarty_klaviyo_forms[<?php echo $index; ?>][hook]">
                                             <?php
                                             $hooks = array(
@@ -259,13 +266,13 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                                             ?>
                                         </select>
                                     </td>
-                                    <td>
+                                    <td style="width:5%">
                                         <label class="smarty-toggle-switch">
                                             <input type="checkbox" name="smarty_klaviyo_forms[<?php echo $index; ?>][enabled]" value="yes" <?php checked(isset($form_data['enabled']) ? $form_data['enabled'] : '', 'yes'); ?>>
                                             <span class="slider round"></span>
                                         </label>
                                     </td>
-                                    <td style="position: relative;">
+                                    <td style="position: relative; width:10%">
                                         <?php echo !empty($form_data['created']) ? esc_html($form_data['created']) : 'N/A'; ?>
                                         <button type="button" class="remove-form-row">
                                             <span class="dashicons dashicons-no"></span>
@@ -286,41 +293,59 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
 if (!function_exists('smarty_add_klaviyo_form_for_out_of_stock_products')) {
     function smarty_add_klaviyo_form_for_out_of_stock_products() {
         $smarty_klaviyo_forms = get_option('smarty_klaviyo_forms', []);
-        $settings = get_option('smarty_ksf_general_settings', []);
+        $global_settings = get_option('smarty_ksf_general_settings', []);
 
-        if (!$smarty_klaviyo_forms || !$settings) {
+        if (!$smarty_klaviyo_forms) {
+            error_log('No Klaviyo forms found');
             return;
         }
 
         foreach ($smarty_klaviyo_forms as $form_data) {
             if (isset($form_data['enabled']) && $form_data['enabled'] === 'yes') {
-                add_action($form_data['hook'], function() use ($form_data, $settings) {
+                add_action($form_data['hook'], function() use ($form_data, $global_settings) {
                     global $product;
 
                     if (!$product || !is_a($product, 'WC_Product')) {
+                        error_log('No product found or product is not a WC_Product');
                         return;
                     }
 
                     $product_id = $product->get_id();
                     $show_form = false;
 
-                    // Ensure display_condition is treated as an array
-                    $display_conditions = isset($form_data['display_condition']) && !in_array('default', (array)$form_data['display_condition'])
-                        ? (array)$form_data['display_condition'] 
-                        : (array)$settings['display_condition'];
+                    // Safely determine the display conditions, ensuring they are arrays
+                    $display_conditions = [];
+
+                    if (isset($form_data['display_condition']) && is_array($form_data['display_condition']) && !empty($form_data['display_condition']) && !in_array('default', $form_data['display_condition'])) {
+                        $display_conditions = $form_data['display_condition'];
+                    } elseif (isset($global_settings['display_condition']) && is_array($global_settings['display_condition'])) {
+                        $display_conditions = $global_settings['display_condition'];
+                    }
+
+                    // Log an error if the display conditions are not an array
+                    if (!is_array($display_conditions)) {
+                        error_log('Display conditions should be an array, but it is of type: ' . gettype($display_conditions));
+                    }
+
+                    // Log the conditions being checked
+                    error_log('Checking conditions for product ID: ' . $product_id);
 
                     foreach ($display_conditions as $condition) {
                         switch ($condition) {
                             case 'out_of_stock':
                                 if (!$product->is_in_stock()) {
                                     $show_form = true;
+                                    error_log('Condition met: out_of_stock for product ID: ' . $product_id);
                                 }
                                 break;
                             case 'low_stock':
                                 if ($product->get_stock_quantity() < 5) {
                                     $show_form = true;
+                                    error_log('Condition met: low_stock for product ID: ' . $product_id);
                                 }
                                 break;
+                            default:
+                                error_log('No matching condition for product ID: ' . $product_id);
                         }
 
                         if ($show_form) {
@@ -328,8 +353,11 @@ if (!function_exists('smarty_add_klaviyo_form_for_out_of_stock_products')) {
                         }
                     }
 
-                    if ($show_form && in_array($product_id, $form_data['product_ids'])) {
+                    if ($show_form && in_array($product_id, (array)$form_data['product_ids'])) {
                         echo '<div class="klaviyo-form-' . esc_attr($form_data['form_id']) . '"></div>';
+                        error_log('Form displayed for product ID: ' . $product_id);
+                    } else {
+                        error_log('Form not displayed for product ID: ' . $product_id);
                     }
                 });
             }

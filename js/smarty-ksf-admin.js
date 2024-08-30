@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
     });
 
     $('.form-display-condition-select').select2({
-        placeholder: 'Select Display Conditions',
+        placeholder: 'Select Conditions',
         width: '100%'
     });
 
@@ -105,7 +105,7 @@ jQuery(document).ready(function($) {
         });
 
         $('.form-display-condition-select').last().select2({
-            placeholder: 'Select Display Conditions',
+            placeholder: 'Select Conditions',
             width: '100%'
         });
     });

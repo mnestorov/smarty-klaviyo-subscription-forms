@@ -1,9 +1,8 @@
 jQuery(document).ready(function($) {
-    // Function to get the current date in the format yyyy-mm-dd
     function getCurrentDateTime() {
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
         var yyyy = today.getFullYear();
         var hh = String(today.getHours()).padStart(2, '0');
         var min = String(today.getMinutes()).padStart(2, '0');
@@ -14,13 +13,13 @@ jQuery(document).ready(function($) {
 
     $('.smarty-ksf-product-search').select2({
         ajax: {
-            url: ajaxurl, // WordPress AJAX
+            url: ajaxurl,
             dataType: 'json',
             delay: 250,
             data: function (params) {
                 return {
-                    q: params.term, // search term
-                    action: 'smarty_ksf_search_products' // WordPress AJAX action
+                    q: params.term,
+                    action: 'smarty_ksf_search_products'
                 };
             },
             processResults: function (data) {
@@ -32,8 +31,13 @@ jQuery(document).ready(function($) {
         },
         minimumInputLength: 3,
         placeholder: 'Search for a product',
-        allowClear: true, // Add a clear option to remove selection
-        width: '100%',
+        allowClear: true,
+        width: '100%'
+    });
+
+    $('.form-display-condition-select').select2({
+        placeholder: 'Select Display Conditions',
+        width: '100%'
     });
 
     $('#smarty-add-form-row').on('click', function() {
@@ -45,6 +49,12 @@ jQuery(document).ready(function($) {
                     <select name="smarty_klaviyo_forms[` + index + `][product_ids][]" multiple="multiple" class="smarty-ksf-product-search" style="width: 100%;"></select>
                 </td>
                 <td>
+                    <select name="smarty_klaviyo_forms[` + index + `][display_conditions][]" multiple="multiple" class="form-display-condition-select select2" style="width: 100%;">
+                        <option value="out_of_stock">Out of Stock</option>
+                        <option value="low_stock">Low Stock (<5)</option>
+                    </select>
+                </td>
+                <td>
                     <input type="text" name="smarty_klaviyo_forms[` + index + `][form_id]" />
                 </td>
                 <td>
@@ -54,7 +64,6 @@ jQuery(document).ready(function($) {
                         <option value="woocommerce_single_product_summary">Single Product Summary</option>
                         <option value="woocommerce_after_single_product_summary">After Single Product Summary</option>
                         <option value="woocommerce_after_single_product">After Single Product</option>
-                        <!-- Add more hooks here if needed -->
                     </select>
                 </td>
                 <td>
@@ -71,16 +80,15 @@ jQuery(document).ready(function($) {
         `;
         $('#smarty-klaviyo-forms-table tbody').append(newRow);
 
-        // Initialize Select2 on the new row
-        $('.smarty-ksf-product-search').select2({
+        $('.smarty-ksf-product-search').last().select2({
             ajax: {
-                url: ajaxurl, // WordPress AJAX
+                url: ajaxurl,
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
                     return {
-                        q: params.term, // search term
-                        action: 'smarty_ksf_search_products' // WordPress AJAX action
+                        q: params.term,
+                        action: 'smarty_ksf_search_products'
                     };
                 },
                 processResults: function (data) {
@@ -92,28 +100,21 @@ jQuery(document).ready(function($) {
             },
             minimumInputLength: 3,
             placeholder: 'Search for a product',
-            allowClear: true, // Add a clear option to remove selection
-            width: '100%',
+            allowClear: true,
+            width: '100%'
         });
 
-        // Remove form row
-        $(document).on('click', '.remove-form-row', function() {
-            $(this).closest('tr').remove();
+        $('.form-display-condition-select').last().select2({
+            placeholder: 'Select Display Conditions',
+            width: '100%'
         });
+    });
+
+    $('.form-display-condition-select').each(function() {
+        var $row = $(this).closest('tr');
     });
 
     $(document).on('click', '.remove-form-row', function() {
         $(this).closest('tr').remove();
     });
-
-    setTimeout(function() {
-        var message = document.getElementById("smarty-updated");
-        if (message) {
-            message.style.transition = "opacity 1s ease";
-            message.style.opacity = "0";
-            setTimeout(function() {
-                message.style.display = "none";
-            }, 1000); // 1 seconds
-        }
-    }, 5000); // 5 seconds
 });

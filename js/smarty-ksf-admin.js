@@ -1,4 +1,50 @@
 jQuery(document).ready(function($) {
+    // Tab click event handler
+    $('.nav-tab').on('click', function(e) {
+        e.preventDefault();
+        $('.nav-tab').removeClass('nav-tab-active');
+        $('.tab-content').removeClass('active-tab');
+        $(this).addClass('nav-tab-active');
+        var activeTab = $(this).attr('href');
+        $(activeTab).addClass('active-tab');
+    });
+
+    // Media uploader for image selection
+    $('#select-popup-image').on('click', function(e) {
+        e.preventDefault();
+        var frame = wp.media({
+            title: smarty_ksf_vars.selectImageTitle,
+            button: {
+                text: smarty_ksf_vars.useImageText
+            },
+            multiple: false
+        });
+
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $('#popup-image-id').val(attachment.id);
+            $('#popup-image-preview').html('<img src="' + attachment.sizes.thumbnail.url + '" />');
+            $('#remove-popup-image').show();
+        });
+
+        frame.open();
+    });
+
+    // Remove image
+    $('#remove-popup-image').on('click', function(e) {
+        e.preventDefault();
+        $('#popup-image-id').val('');
+        $('#popup-image-preview').html('');
+        $(this).hide();
+    });
+
+    // Initialize Select2 for page selection
+    $('#popup-pages').select2({
+        placeholder: 'Select Pages',
+        allowClear: true,
+        width: '100%'
+    });
+
     function getCurrentDateTime() {
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');

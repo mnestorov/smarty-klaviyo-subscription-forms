@@ -1,3 +1,16 @@
+.tab-content {
+    display: none;
+}
+
+.tab-content.active-tab {
+    display: block;
+}
+
+#popup-image-preview img { 
+    max-width: 100px; 
+    margin-top: 10px; 
+}
+
 /* Table styling */
 .wp-list-table.widefat.striped {
     width: 100%;

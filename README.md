@@ -5,7 +5,7 @@
 [![Licence](https://img.shields.io/badge/LICENSE-GPL2.0+-blue)](./LICENSE)
 
 - Developed by: [Smarty Studio](https://smartystudio.net) | [Martin Nestorov](https://github.com/mnestorov)
-- Plugin URI: https://github.com/smartystudio/smarty-klaviyo-subscription-forms
+- Plugin URI: https://github.com/mnestorov/smarty-klaviyo-subscription-forms
 
 ## Overview
 

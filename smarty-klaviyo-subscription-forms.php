@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: SM - Klaviyo Subscription Forms for WooCommerce
- * Plugin URI:  https://github.com/smartystudio/smarty-klaviyo-subscription-forms
+ * Plugin URI:  https://github.com/mnestorov/smarty-klaviyo-subscription-forms
  * Description: A plugin to manage Klaviyo subscription forms for specific products in WooCommerce, with support for multisite environments.
  * Version:     1.2.0
  * Author:      Smarty Studio | Martin Nestorov
- * Author URI:  https://smartystudio.net
+ * Author URI:  https://github.com/mnestorov
  * Text Domain: smarty-klaviyo-subscription-forms
  * WC requires at least: 3.5.0
  * WC tested up to: 9.0.2

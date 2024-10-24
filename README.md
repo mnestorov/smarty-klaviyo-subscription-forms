@@ -48,9 +48,9 @@ The plugin is particularly useful for eCommerce stores that want to engage custo
 
 ### Functions
 
-- **mn_add_klaviyo_form_for_out_of_stock_products:** Displays the appropriate Klaviyo form on the product page when the product is out of stock.
-- **mn_klaviyo_forms_page:** Renders the admin settings page where product/form pairs can be managed.
-- **mn_klaviyo_add_admin_menu:** Adds a submenu under WooCommerce for managing the Klaviyo forms.
+- **smarty_add_klaviyo_form_for_out_of_stock_products:** Displays the appropriate Klaviyo form on the product page when the product is out of stock.
+- **smarty_klaviyo_forms_page:** Renders the admin settings page where product/form pairs can be managed.
+- **smarty_klaviyo_add_admin_menu:** Adds a submenu under WooCommerce for managing the Klaviyo forms.
 
 ## Requirements
 

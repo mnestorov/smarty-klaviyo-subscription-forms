@@ -342,6 +342,14 @@ if (!function_exists('smarty_ksf_settings_page_content')) {
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="6" style="text-align: center;">
+                                        <button type="button" id="smarty-add-form-row" class="add-form-row">
+                                            <span class="dashicons dashicons-plus"></span>
+                                        </button>
+                                    </td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>

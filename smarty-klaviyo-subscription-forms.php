@@ -3,7 +3,7 @@
  * Plugin Name: SM - Klaviyo Subscription Forms for WooCommerce
  * Plugin URI:  https://github.com/mnestorov/smarty-klaviyo-subscription-forms
  * Description: A plugin to manage Klaviyo subscription forms for specific products in WooCommerce, with support for multisite environments.
- * Version:     1.2.0
+ * Version:     1.0.0
  * Author:      Smarty Studio | Martin Nestorov
  * Author URI:  https://github.com/mnestorov
  * Text Domain: smarty-klaviyo-subscription-forms

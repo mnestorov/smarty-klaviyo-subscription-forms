@@ -1,50 +1,4 @@
 jQuery(document).ready(function($) {
-    // Tab click event handler
-    $('.nav-tab').on('click', function(e) {
-        e.preventDefault();
-        $('.nav-tab').removeClass('nav-tab-active');
-        $('.tab-content').removeClass('active-tab');
-        $(this).addClass('nav-tab-active');
-        var activeTab = $(this).attr('href');
-        $(activeTab).addClass('active-tab');
-    });
-
-    // Media uploader for image selection
-    $('#select-popup-image').on('click', function(e) {
-        e.preventDefault();
-        var frame = wp.media({
-            title: smarty_ksf_vars.selectImageTitle,
-            button: {
-                text: smarty_ksf_vars.useImageText
-            },
-            multiple: false
-        });
-
-        frame.on('select', function() {
-            var attachment = frame.state().get('selection').first().toJSON();
-            $('#popup-image-id').val(attachment.id);
-            $('#popup-image-preview').html('<img src="' + attachment.sizes.thumbnail.url + '" />');
-            $('#remove-popup-image').show();
-        });
-
-        frame.open();
-    });
-
-    // Remove image
-    $('#remove-popup-image').on('click', function(e) {
-        e.preventDefault();
-        $('#popup-image-id').val('');
-        $('#popup-image-preview').html('');
-        $(this).hide();
-    });
-
-    // Initialize Select2 for page selection
-    $('#popup-pages').select2({
-        placeholder: 'Select Pages',
-        allowClear: true,
-        width: '100%'
-    });
-
     function getCurrentDateTime() {
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
@@ -56,10 +10,10 @@ jQuery(document).ready(function($) {
 
         return yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + ss;
     }
-
+    
     $('.smarty-ksf-product-search').select2({
         ajax: {
-            url: ajaxurl,
+            url: smartyKsfEvents.ajaxUrl,
             dataType: 'json',
             delay: 250,
             data: function (params) {
@@ -128,7 +82,7 @@ jQuery(document).ready(function($) {
 
         $('.smarty-ksf-product-search').last().select2({
             ajax: {
-                url: ajaxurl,
+                url: smartyKsfEvents.ajaxUrl,
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -162,5 +116,61 @@ jQuery(document).ready(function($) {
 
     $(document).on('click', '.remove-form-row', function() {
         $(this).closest('tr').remove();
+    });
+
+    // Handle tab switching
+    $(".smarty-ksf-nav-tab").click(function (e) {
+        e.preventDefault();
+        $(".smarty-ksf-nav-tab").removeClass("smarty-ksf-nav-tab-active");
+        $(this).addClass("smarty-ksf-nav-tab-active");
+
+        $(".smarty-ksf-tab-content").removeClass("active");
+        $($(this).attr("href")).addClass("active");
+    });
+
+    // Load README.md
+    $("#smarty-ksf-load-readme-btn").click(function () {
+        const $content = $("#smarty-ksf-readme-content");
+        $content.html("<p>Loading...</p>");
+
+        $.ajax({
+            url: smartyKsfEvents.ajaxUrl,
+            type: "POST",
+            data: {
+                action: "smarty_ksf_load_readme",
+                nonce: smartyKsfEvents.nonce,
+            },
+            success: function (response) {
+                console.log(response);
+                if (response.success) {
+                    $content.html(response.data);
+                } else {
+                    $content.html("<p>Error loading README.md</p>");
+                }
+            },
+        });
+    });
+
+    // Load CHANGELOG.md
+    $("#smarty-ksf-load-changelog-btn").click(function () {
+        const $content = $("#smarty-ksf-changelog-content");
+        $content.html("<p>Loading...</p>");
+
+        $.ajax({
+            url: smartyKsfEvents.ajaxUrl,
+            type: "POST",
+            data: {
+                action: "smarty_ksf_load_changelog",
+                nonce: smartyKsfEvents.nonce,
+            },
+            success: function (response) {
+                console.log(response);
+                if (response.success) {
+                    $content.html(response.data);
+                } else {
+                    $content.html("<p>Error loading CHANGELOG.md</p>");
+                }
+            },
+        });
     });
 });
